@@ -1,0 +1,60 @@
+---
+title: "Selección de sitios para el establecimiento de una red de estaciones meteoclimáticas en República Dominicana usando decisión multicriterio y análisis de vecindad"
+author: "<small> José Ramón Martínez Batlle, UASD (GitHub: \\@geofis) <br> Michela Izzo Gioiosa, Guakía Ambiente </small>"
+date: "II Congreso Internacional de Investigación, <br> Desarrollo e Innovación (I+D+I) <br> XXII Jornada de Investigación Científica <br> <small> Universidad Autónoma de Santo Domingo (UASD) <br> 14 al 16 de noviembre, 2023 <br> Santo Domingo, República Dominicana </small> <br> <span style='font-size: 18px;'>https://geofis.github.io/red-hidrografica-densa-rd/presentaciones/II-Congreso-IDI-XXII-JIC-nov23.html</span>"
+output:
+  revealjs::revealjs_presentation:
+    title-slide-attributes:
+      data-background-image: img/fondo.jpg
+      data-background-size: cover
+    template: defaultmodificada.html
+    transition: fade
+    css: estilos.css
+bibliography: ../biblio.bib
+csl: apa.csl
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE, echo=F}
+knitr::opts_chunk$set(echo = FALSE)
+ruta_figuras <- 'img/'
+```
+
+# JUSTIFICACIÓN
+
+## 
+
+- **Las estaciones meteoclimáticas (EMC) son vitales** para producir datos climáticos precisos y tienen aplicaciones en múltiples campos.
+
+- Los datos de las EMC, en sí mismos, no **previenen** impactos de fenómenos meteorológicos o del cambio climático, pero son una fuente esencial para apoyar **apoyan estudios meteorológicos climáticos**.
+
+- Una red adecuada de EMC es **crucial para la toma de decisiones** y **gestión del territorio**.
+
+## 
+
+- Las EMC están **distribuidas desigualmente en el territorio** de República Dominicana, lo cual afecta la precisión y representatividad de los datos.
+
+- **Mejorar la red de EMC** es vital dada la **vulnerabilidad al cambio climático** de República Dominicana, para lo cual se requiere planificar la selección de sitios y, por supuesto, financiamiento.
+
+##
+
+- Los **métodos multicriterio de decisión** (MCDA y MCDM) son idóneos para el diseño de redes EMC, siempre que se usen **en combinación técnicas geoespaciales** (SIG, teledetección, análisis geoespacial, geomática).
+
+- El método "proceso analítico jerárquico" o "proceso de jerarquía analítica" (*analytic hierarchy process*), AHP, se ha aplicado con éxito en distintos contextos para seleccionar sitios óptimos de colocación de EMC.
+
+
+# MATERIALES Y MÉTODOS
+
+
+# RESULTADOS
+
+
+# DISCUSIÓN
+
+
+# REFERENCIAS
+
+<section style="font-size: 24px; text-align: left;">
+
+</section>
