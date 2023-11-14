@@ -1,7 +1,7 @@
 ---
 title: "Selección de sitios para el establecimiento de una red de estaciones meteoclimáticas en República Dominicana usando decisión multicriterio y análisis de vecindad"
-author: "<small> José Ramón Martínez Batlle, UASD (GitHub: \\@geofis) <br> Michela Izzo Gioiosa, Guakía Ambiente </small>"
-date: "II Congreso Internacional de Investigación, <br> Desarrollo e Innovación (I+D+I) <br> XXII Jornada de Investigación Científica <br> <small> Universidad Autónoma de Santo Domingo (UASD) <br> 14 al 16 de noviembre, 2023 <br> Santo Domingo, República Dominicana </small> <br> <span style='font-size: 18px;'>https://geofis.github.io/red-hidrografica-densa-rd/presentaciones/II-Congreso-IDI-XXII-JIC-nov23.html</span>"
+author: "<small> José Ramón Martínez Batlle, UASD (jmartinez19\\@uasd.edu.do) <br> Michela Izzo Gioiosa, Guakía Ambiente </small>"
+date: "II Congreso Internacional de Investigación, <br> Desarrollo e Innovación (I+D+I) <br> XXII Jornada de Investigación Científica <br> <small> Universidad Autónoma de Santo Domingo (UASD) <br> 14 al 16 de noviembre, 2023 <br> Santo Domingo, República Dominicana </small> <br> <span style='font-size: 18px;'>https://geofis.github.io/seleccion-sitio-estaciones-meteoclimaticas-rd/presentaciones/II-Congreso-IDI-XXII-JIC-nov23.html</span>"
 output:
   revealjs::revealjs_presentation:
     title-slide-attributes:
@@ -43,9 +43,52 @@ ruta_figuras <- 'img/'
 
 - El método "proceso analítico jerárquico" o "proceso de jerarquía analítica" (*analytic hierarchy process*), AHP, se ha aplicado con éxito en distintos contextos para seleccionar sitios óptimos de colocación de EMC.
 
+## ![](img/red-estaciones-meteoclimatica-publica-todos-los-estados.jpg)
+
+## ![](img/red-estaciones-meteoclimatica-publica-solo-estado-activas.jpg)
+
+## ![](img/red-estaciones-meteoclimatica-publica-solo-estado-activas-destacado.jpg)
 
 # MATERIALES Y MÉTODOS
 
+```{bash, eval=F, include=F, echo=F}
+cd img
+ln -s ../../figuras/procesamiento-ahp-fuentes-sig-propuest-sitios.pdf .
+convert -density 300 -background white -alpha remove -alpha off -resize 1920x \
+  procesamiento-ahp-fuentes-sig-propuest-sitios.pdf \
+  procesamiento-ahp-fuentes-sig-propuest-sitios.jpg
+cd ..
+```
+
+## ![](img/procesamiento-ahp-fuentes-sig-propuest-sitios.jpg)
+
+## ![](img/tabla-resultados-en-bruto-respuestas-expertos.jpg)
+
+<small>Captura íntegra (ilegible por sus dimensiones) de la tabla de resultados en bruto (anonimizada) obtenida a partir del rellenado del "Formulario de comparación pareada de criterios de identificación de sitios idóneos para una red de observación climática"</small>
+
+## ![](img/razon-de-consistencia-explicada.jpg)
+
+## ![](img/razon-de-consistencia-calculada.jpg)
+
+## ![](img/preferencias-individuales-atributo-valor-propio-todas.jpg)
+
+## ![](img/preferencias-individuales-consistentes.jpg)
+
+## ![](img/preferencias-individuales-atributo-valor-propio-solo-consistentes.jpg)
+
+## ![](img/preferencias-agregadas.jpg)
+
+<small>Resultado AHP: ponderación final (preferencias agregadas)</small>
+
+## ![](img/h3geo.png)
+
+## ![](img/repo-zonal-statistics.png)
+
+## ![](img/umbrales-de-reclasificación-por-criterio.jpg)
+
+## ![](img/reclasificacion-fuentes-geograficas-1.jpg){width=90%}
+
+## ![](img/reclasificacion-fuentes-geograficas-2.jpg){width=90%}
 
 # RESULTADOS
 
@@ -53,8 +96,14 @@ ruta_figuras <- 'img/'
 # DISCUSIÓN
 
 
-# REFERENCIAS
+# 
 
-<section style="font-size: 24px; text-align: left;">
+<section style="font-size: 72px; text-align: center;">
+
+<br> 
+
+<img src="img/email-icon.png" style="display: inline-block; vertical-align: middle;" width="48" /> jmartinez19\@uasd.edu.do
+
+<img src="img/gh-icon.png" style="display: inline-block; vertical-align: middle;" width="48" /> geofis
 
 </section>
