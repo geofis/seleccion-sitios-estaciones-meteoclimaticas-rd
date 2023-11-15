@@ -12,10 +12,11 @@
 
   % Nodes
   \node (start) [startstop] {\textbf{Inicio de} \\ \textbf{propuesta de} \\ \textbf{sitios de EMC}};
-  \node (consultas) [process, right of=start, xshift=4cm] {\textbf{Consultas a expertos} \\ (G Forms + Python)};
-  \node (ponderacion) [process, right of=consultas, xshift=4cm] {Selección y ponderación \\ inicial de criterios \\ (\textsf{R}\textgreater...)};
-  \node (criteriosponderados) [io, right of=ponderacion, xshift=4cm] {\textbf{Criterios} \\ \textbf{ponderados}};
-  \node (recodificacion) [process, below of=criteriosponderados, yshift=-2cm] {Recodificación \\ de respuestas};
+  \node (preseleccion) [process, right of=start, xshift=4cm] {Preselección \\ de criterios};
+  \node (consultas) [process, right of=preseleccion, xshift=4cm] {\textbf{Consultas a expertos} \\ (G Forms + Python)};
+  \node (ponderacion) [process, right of=consultas, xshift=4cm] {Ponderación \\ inicial de criterios \\ (\textsf{R}\textgreater...)};
+%  \node (criteriosponderados) [io, right of=ponderacion, xshift=4cm] {\textbf{Criterios} \\ \textbf{ponderados}};
+  \node (recodificacion) [process, below of=ponderacion, yshift=-2cm] {Recodificación \\ de respuestas};
   \node (consistenciaseleccion) [process, left of=recodificacion, xshift=-4cm] {Evaluación de \\ consistencia y \\ selección};
   \node (resultadoahp) [io, left of=consistenciaseleccion, xshift=-4cm] {\textbf{Resultado AHP} \\ \textbf{ponderación} \\ \textbf{final}};
   
@@ -27,11 +28,12 @@
   \node (end) [startstop, right of=reajustedensidad, xshift=4cm] {\textbf{Propuesta de} \\ \textbf{sitios  de EMC}};
 
   % Arrows
-  \draw [arrow] (start) -- (consultas);
+  \draw [arrow] (start) -- (preseleccion);
+  \draw [arrow] (preseleccion) -- (consultas);  
   \draw [arrow] (consultas) -- (ponderacion);
-  \draw [arrow] (ponderacion) -- (criteriosponderados);
+  \draw [arrow] (ponderacion) -- (recodificacion);
 
-  \draw [arrow] (criteriosponderados) -- (recodificacion);
+%  \draw [arrow] (criteriosponderados) -- (recodificacion);
   \draw [arrow] (recodificacion) -- (consistenciaseleccion);
   \draw [arrow] (consistenciaseleccion) -- (resultadoahp);
   \draw [arrow] (resultadoahp) -- (ponderacionfuentesgeo);
