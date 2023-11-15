@@ -13,13 +13,13 @@
   % Nodes
   \node (start) [startstop] {\textbf{Inicio de} \\ \textbf{propuesta de} \\ \textbf{sitios de EMC}};
   \node (consultas) [process, right of=start, xshift=4cm] {\textbf{Consultas a expertos} \\ (G Forms + Python)};
-  \node (ponderacion) [process, right of=consultas, xshift=4cm] {Ponderación inicial \\ de criterios \\ (\textsf{R}\textgreater...)};
+  \node (ponderacion) [process, right of=consultas, xshift=4cm] {Selección y ponderación \\ inicial de criterios \\ (\textsf{R}\textgreater...)};
   \node (criteriosponderados) [io, right of=ponderacion, xshift=4cm] {\textbf{Criterios} \\ \textbf{ponderados}};
   \node (recodificacion) [process, below of=criteriosponderados, yshift=-2cm] {Recodificación \\ de respuestas};
   \node (consistenciaseleccion) [process, left of=recodificacion, xshift=-4cm] {Evaluación de \\ consistencia y \\ selección};
   \node (resultadoahp) [io, left of=consistenciaseleccion, xshift=-4cm] {\textbf{Resultado AHP} \\ \textbf{ponderación} \\ \textbf{final}};
   
-  \node (reclasificacionfuentesgeo) [io, left of=resultadoahp, xshift=-4cm] {\textbf{Reclasificación} \\ \textbf{de los criterios} \\ (umbrales\textgreater categorías)};
+  \node (reclasificacionfuentesgeo) [io, left of=resultadoahp, xshift=-4cm] {\textbf{Reclasificación} \\ \textbf{de los criterios} \\ (fuentes geoespaciales\textgreater \\ umbrales\textgreater categorías)};
 
   \node (ponderacionfuentesgeo) [process, below of=reclasificacionfuentesgeo, yshift=-2cm] {\textbf{Ponderación} \\ \textbf{de los criterios} \\ \textbf{según AHP} \\ (categorías agregadas)};
   \node (exclusion) [process, right of=ponderacionfuentesgeo, xshift=4cm] {Exclusión por \\ factores \\ limitantes};

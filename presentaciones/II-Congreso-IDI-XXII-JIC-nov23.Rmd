@@ -64,11 +64,11 @@ cd ..
 
 ## ![](img/criterios-evaluados.jpg)
 
-## ![](img/tabla-puntuaciones-recodificadas.png)
-
 ## ![](img/tabla-resultados-en-bruto-respuestas-expertos.jpg)
 
 <small>Captura íntegra (ilegible por sus dimensiones) **de la tabla de resultados en bruto** (anonimizada) obtenida a partir del rellenado del "Formulario de comparación pareada de criterios de identificación de sitios idóneos para una red de observación climática"</small>
+
+## ![](img/tabla-puntuaciones-recodificadas.png)
 
 ## ![](img/razon-de-consistencia-explicada.jpg)
 

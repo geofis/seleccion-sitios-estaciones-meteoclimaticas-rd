@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.8.7)  14 NOV 2023 21:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.8.7)  14 NOV 2023 22:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -446,8 +446,8 @@ LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
 (./procesamiento-ahp-fuentes-sig-propuest-sitios.aux) ) 
 Here is how much of TeX's memory you used:
  13175 strings out of 481239
- 277307 string characters out of 5920378
- 492474 words of memory out of 5000000
+ 277308 string characters out of 5920378
+ 492508 words of memory out of 5000000
  28225 multiletter control sequences out of 15000+600000
  532951 words of font info for 26 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -457,8 +457,8 @@ f-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 public/amsfonts/cm/cmss10.pfb>
-Output written on procesamiento-ahp-fuentes-sig-propuest-sitios.pdf (1 page, 47
-886 bytes).
+Output written on procesamiento-ahp-fuentes-sig-propuest-sitios.pdf (1 page, 48
+186 bytes).
 PDF statistics:
  27 PDF objects out of 1000 (max. 8388607)
  19 compressed objects within 1 object stream
