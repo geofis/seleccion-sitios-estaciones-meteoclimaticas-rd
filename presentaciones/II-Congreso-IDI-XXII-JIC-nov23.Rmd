@@ -25,23 +25,23 @@ ruta_figuras <- 'img/'
 
 ## 
 
-- **Las estaciones meteoclimáticas (EMC) son vitales** para producir datos climáticos precisos y tienen aplicaciones en múltiples campos.
+-   **Las estaciones meteoclimáticas (EMC) son vitales** para producir datos climáticos precisos y tienen aplicaciones en múltiples campos.
 
-- Los datos de las EMC, en sí mismos, no **previenen** impactos de fenómenos meteorológicos o del cambio climático, pero son una fuente esencial para apoyar **apoyan estudios meteorológicos climáticos**.
+-   Los datos de las EMC, en sí mismos, no **previenen** impactos de fenómenos meteorológicos o del cambio climático, pero son una fuente esencial para apoyar **apoyan estudios meteorológicos climáticos**.
 
-- Una red adecuada de EMC es **crucial para la toma de decisiones** y **gestión del territorio**.
+-   Una red adecuada de EMC es **crucial para la toma de decisiones** y **gestión del territorio**.
 
 ## 
 
-- Las EMC están **distribuidas desigualmente en el territorio** de República Dominicana, lo cual afecta la precisión y representatividad de los datos.
+-   Las EMC están **distribuidas desigualmente en el territorio** de República Dominicana, lo cual afecta la precisión y representatividad de los datos.
 
-- **Mejorar la red de EMC** es vital dada la **vulnerabilidad al cambio climático** de República Dominicana, para lo cual se requiere planificar la selección de sitios y, por supuesto, financiamiento.
+-   **Mejorar la red de EMC** es vital dada la **vulnerabilidad al cambio climático** de República Dominicana, para lo cual se requiere planificar la selección de sitios y, por supuesto, financiamiento.
 
-##
+## 
 
-- Los **métodos multicriterio de decisión** (MCDA y MCDM) son idóneos para el diseño de redes EMC, siempre que se usen **en combinación técnicas geoespaciales** (SIG, teledetección, análisis geoespacial, geomática).
+-   Los **métodos multicriterio de decisión** (MCDA y MCDM) son idóneos para el diseño de redes EMC, siempre que se usen **en combinación técnicas geoespaciales** (SIG, teledetección, análisis geoespacial, geomática).
 
-- El método "proceso analítico jerárquico" o "proceso de jerarquía analítica" (*analytic hierarchy process*), AHP, se ha aplicado con éxito en distintos contextos para seleccionar sitios óptimos de colocación de EMC.
+-   El método "**proceso analítico jerárquico**" o "**proceso de jerarquía analítica**" (*analytic hierarchy process*), AHP, se ha aplicado con éxito en distintos contextos para seleccionar sitios óptimos de colocación de EMC.
 
 ## ![](img/red-estaciones-meteoclimatica-publica-todos-los-estados.jpg)
 
@@ -62,9 +62,13 @@ cd ..
 
 ## ![](img/procesamiento-ahp-fuentes-sig-propuest-sitios.jpg)
 
+## ![](img/criterios-evaluados.jpg)
+
+## ![](img/tabla-puntuaciones-recodificadas.png)
+
 ## ![](img/tabla-resultados-en-bruto-respuestas-expertos.jpg)
 
-<small>Captura íntegra (ilegible por sus dimensiones) de la tabla de resultados en bruto (anonimizada) obtenida a partir del rellenado del "Formulario de comparación pareada de criterios de identificación de sitios idóneos para una red de observación climática"</small>
+<small>Captura íntegra (ilegible por sus dimensiones) **de la tabla de resultados en bruto** (anonimizada) obtenida a partir del rellenado del "Formulario de comparación pareada de criterios de identificación de sitios idóneos para una red de observación climática"</small>
 
 ## ![](img/razon-de-consistencia-explicada.jpg)
 
@@ -84,26 +88,86 @@ cd ..
 
 ## ![](img/repo-zonal-statistics.png)
 
-## ![](img/umbrales-de-reclasificación-por-criterio.jpg)
+## ![](img/umbrales-de-reclasificaci%C3%B3n-por-criterio.jpg)
 
-## ![](img/reclasificacion-fuentes-geograficas-1.jpg){width=90%}
+## ![](img/reclasificacion-fuentes-geograficas-1.jpg){width="90%"}
 
-## ![](img/reclasificacion-fuentes-geograficas-2.jpg){width=90%}
+## ![](img/reclasificacion-fuentes-geograficas-2.jpg){width="90%"}
+
+## ![](img/categorias-agregadas.jpg)
+
+## ![](img/categorias-agregadas-exclusion-por-factores-limitantes.jpg)
+
+## ![](img/areas-proporcionales-categorias-agregadas.jpg)
 
 # RESULTADOS
 
+## ![](img/sitios-propuestos-escenario-100-km2-con-redundancia.jpg)
+
+<small>Sitios propuestos en el escenario de densidad **"una estación por cada 100 km**$^2$", dentro de las categorías "prioritario" e "imprescindible", **sin eliminar redundancia** respecto de estaciones existentes</small>
+
+## ![](img/sitios-propuestos-escenario-150-km2-con-redundancia.jpg)
+
+<small>Sitios propuestos en el escenario de densidad **"una estación por cada 150 km**$^2$", dentro de las categorías "prioritario" e "imprescindible", **sin eliminar redundancia** respecto de estaciones existentes</small>
+
+## ![](img/sitios-propuestos-escenario-250-km2-con-redundancia.jpg)
+
+<small>Sitios propuestos en el escenario de densidad **"una estación por cada 250 km**$^2$", dentro de las categorías "prioritario" e "imprescindible", **sin eliminar redundancia** respecto de estaciones existentes</small>
+
+## ![](img/sitios-propuestos-escenario-100-km2-sin-redundancia.jpg)
+
+<small>Sitios propuestos en el escenario de densidad **"una estación por cada 100 km**$^2$", dentro de las categorías "prioritario" e "imprescindible", **eliminando redundancia** respecto de estaciones existentes</small>
+
+## ![](img/sitios-propuestos-escenario-150-km2-sin-redundancia.jpg)
+
+<small>Sitios propuestos en el escenario de densidad **"una estación por cada 150 km**$^2$", dentro de las categorías "prioritario" e "imprescindible", **eliminando redundancia** respecto de estaciones existentes</small>
+
+## ![](img/sitios-propuestos-escenario-250-km2-sin-redundancia.jpg)
+
+<small>Sitios propuestos en el escenario de densidad **"una estación por cada 250 km**$^2$", dentro de las categorías "prioritario" e "imprescindible", **eliminando redundancia** respecto de estaciones existentes</small>
 
 # DISCUSIÓN
 
+## 
+
+-   Se seleccionaron **sitios para estaciones meteoclimáticas**, maximizando recursos y eficiencia y evitando redundancia, aplicando **exitosamente AHP, técnicas geoespaciales y análisis de vecindad**.
+
+-   Los criterios como **estacionalidad pluviométrica y térmica, horas de insolación, y elevación** fueron ponderados altamente en la selección de sitios, lo que refleja su importancia en la red meteoclimática.
+
+-   El **uso de densidades**, siguiendo las recomendaciones de la Organización Meteorológica Mundial, ofrece la posibilidad de **mejorar la red en distintos escenarios**.
+
+## 
+
+-   Entre las limitaciones del estudio incluimos las siguientes:
+
+    -   **Representatividad de la muestra** de expertos y expertas.
+
+    -   **Representatividad de los criterios** seleccionados.
+
+    -   **Escala** de la aplicación del AHP.
+
+## 
+
+-   Iniciativas futuras podrían centrarse en:
+
+    -   Incluir **más variables**.
+
+    -   Aplicar el mismo enfoque a **otros territorios caribeños**.
+
+    -   **Desarrollar aplicaciones de usuario** que automaticen la mayor parte de los análisis.
+
+## 
+
+-   **El método AHP, conjuntamente con las técnicas geoespaciales y el análisis de vecindad, probaron ser útiles en la selección de sitios para estaciones meteoclimáticas, permitiendo una toma de decisiones informada y estratégica.**
 
 # 
 
 <section style="font-size: 72px; text-align: center;">
 
-<br> 
+<br>
 
-<img src="img/email-icon.png" style="display: inline-block; vertical-align: middle;" width="48" /> jmartinez19\@uasd.edu.do
+<img src="img/email-icon.png" style="display: inline-block; vertical-align: middle;" width="48"/> jmartinez19\@uasd.edu.do
 
-<img src="img/gh-icon.png" style="display: inline-block; vertical-align: middle;" width="48" /> geofis
+<img src="img/gh-icon.png" style="display: inline-block; vertical-align: middle;" width="48"/> geofis
 
 </section>

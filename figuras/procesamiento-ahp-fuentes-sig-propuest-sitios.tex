@@ -19,11 +19,11 @@
   \node (consistenciaseleccion) [process, left of=recodificacion, xshift=-4cm] {Evaluación de \\ consistencia y \\ selección};
   \node (resultadoahp) [io, left of=consistenciaseleccion, xshift=-4cm] {\textbf{Resultado AHP} \\ \textbf{ponderación} \\ \textbf{final}};
   
-  \node (reclasificacionfuentesgeo) [io, left of=resultadoahp, xshift=-4cm] {\textbf{Reclasificación de} \\ \textbf{fuentes geográficas} \\ (umbrales\textgreater categorías)};
+  \node (reclasificacionfuentesgeo) [io, left of=resultadoahp, xshift=-4cm] {\textbf{Reclasificación} \\ \textbf{de los criterios} \\ (umbrales\textgreater categorías)};
 
-  \node (ponderacionfuentesgeo) [process, below of=reclasificacionfuentesgeo, yshift=-2cm] {\textbf{Ponderación de las} \\ \textbf{fuentes geográficas} \\ \textbf{reclasificadas} \\ \textbf{según AHP}};
+  \node (ponderacionfuentesgeo) [process, below of=reclasificacionfuentesgeo, yshift=-2cm] {\textbf{Ponderación} \\ \textbf{de los criterios} \\ \textbf{según AHP} \\ (categorías agregadas)};
   \node (exclusion) [process, right of=ponderacionfuentesgeo, xshift=4cm] {Exclusión por \\ factores \\ limitantes};
-  \node (reajustedensidad) [process, right of=exclusion, xshift=4cm] {\textbf{Tres densidades:} \\ \textbf{análisis de vecindad} \\ \textbf{entre estaciones}};
+  \node (reajustedensidad) [process, right of=exclusion, xshift=4cm] {\textbf{Tres densidades (OMM),} \\ \textbf{eliminación redundancia} \\ (análisis de vecindad)};
   \node (end) [startstop, right of=reajustedensidad, xshift=4cm] {\textbf{Propuesta de} \\ \textbf{sitios  de EMC}};
 
   % Arrows
