@@ -1,5 +1,5 @@
 ---
-title: Site Planning for a Network of Weather Stations in the Dominican Republic Using Zonal Statistics from Geospatial Sources, Multi-Criteria Selection, and Neighborhood Analysis
+title: Site Planning for a Network of Government-operated Weather Stations in the Dominican Republic Using Zonal Statistics from Geospatial Sources, Multi-Criteria Decision-Making, and Neighborhood Analysis
 authors:
   - name: \parbox[t]{10cm}{\centering José-Ramón Martínez-Batlle \\ \orcidlink{0000-0001-9924-0327}}
     department: Facultad de Ciencias
@@ -22,7 +22,9 @@ keywords:
 bibliography: references.bib
 csl: apa.csl
 # lang: en
-output: rticles::arxiv_article
+output:
+  rticles::arxiv_article:
+    template: template.tex
 keep_tex: yes
 editor_options: 
   chunk_output_type: console
@@ -35,6 +37,8 @@ header-includes:
   \usepackage[all]{nowidow}
   \usepackage{xcolor}
   \usepackage{tabu}
+  \setlength{\defaultaddspace}{0pt}
+  \renewcommand{\arraystretch}{1.5}
   \newcommand{\beginsupplement}{
     \setcounter{table}{0}
     \renewcommand{\thetable}{S\arabic{table}}
@@ -72,6 +76,7 @@ if(cargar_script_supl_met) {
   knitr::purl(paste0(raiz_supl_met, '.Rmd'))
   source(paste0(raiz_supl_met, '.R'))
 }
+generar_figuras_lentas <- F
 ```
 
 ```{r pkgs, echo=F, include=F, cache=F}
@@ -92,10 +97,18 @@ library(janitor)
 library(patchwork)
 library(viridis)
 library(cowplot)
+library(lemon)
+library(RColorBrewer)
+library(scales)
+library(ggspatial)
 source('R/funciones.R')
 estilo_kable <- function(df, titulo = '', cubre_anchura = T) {
-  df %>% kable(format = 'html', escape = F, booktabs = T, digits = 2, caption = titulo) %>%
-  kable_styling(bootstrap_options = c("hover", "condensed"), full_width = cubre_anchura)
+  df %>% kable(escape = F, booktabs = T, digits = 2,
+               caption = titulo) %>%
+    kable_styling(bootstrap_options = c("hover", "condensed"),
+                # latex_options = "HOLD_position",
+                full_width = cubre_anchura, position = "center") %>% 
+    row_spec(0, bold = TRUE)
 }
 ```
 
@@ -117,12 +130,20 @@ pais <- invisible(st_read(pais_url, optional = T, layer = 'pais', quiet = T))
 st_geometry(pais) <- "geometry"
 haiti <- st_read("datos/haiti.gpkg", quiet = TRUE)
 lims_rd_orig <- st_bbox(pais)
+lims_rd_orig_utm <- st_bbox(pais %>% st_transform(32619))
 rd_buffer <- 0.05
+rd_buffer_m <- 5500
 lims_rd_buffer <- ifelse(
   grepl('min', names(lims_rd_orig)),
   lims_rd_orig - rd_buffer,
   lims_rd_orig + rd_buffer)
 names(lims_rd_buffer) <- names(lims_rd_orig)
+lims_rd_buffer_utm <- ifelse(
+  grepl('min', names(lims_rd_orig_utm)),
+  lims_rd_orig_utm - rd_buffer_m,
+  lims_rd_orig_utm + rd_buffer_m)
+names(lims_rd_buffer_utm) <- names(lims_rd_orig_utm)
+area_rd <- 48448
 ```
 
 # Introduction
@@ -133,13 +154,11 @@ A robust WS network is crucial for making informed decisions across various doma
 
 Many countries have evaluated the design of their WS networks, sometimes revisiting and improving them multiple times, often with successful implementations [@frei2003designing]. Some have developed site selection protocols that align with general World Meteorological Organization (WMO) standards, adapting or extending them to meet the specific needs of their territories and intended applications [@rojasbriceno2021; @theochari2021hydrometeorological].
 
-The Dominican Republic is highly vulnerable to the impacts of climate change, and an insufficient WS network exacerbates this vulnerability [@Le2019ClimateCA; @Lohmann2016ComparingVA; @Izzo2010ANC; @Roson2013AMF; @LincolnLenderking2020ClimateCA; @Mackay2017TheFO]. Improving and expanding the WS network requires investment in technology and infrastructure, as well as partnerships among government agencies, private entities, and research institutions [@proyecto2019pma]. However, to optimize the use of limited resources, it is critical to design, evaluate, and select network alternatives using weighted criteria.
+The Dominican Republic, an island nation in the Caribbean occupying the eastern two-thirds of Hispaniola, is characterized by its diverse geography, including coastal plains, mountain ranges, and a tropical climate. This geographical diversity, combined with its socioeconomic challenges, makes the country highly vulnerable to the impacts of climate change, and an insufficient WS network exacerbates this vulnerability [@Le2019ClimateCA; @Lohmann2016ComparingVA; @Izzo2010ANC; @Roson2013AMF; @LincolnLenderking2020ClimateCA; @Mackay2017TheFO]. Improving and expanding the WS network requires investment in technology and infrastructure, as well as partnerships among government agencies, private entities, and research institutions [@proyecto2019pma]. However, to optimize the use of limited resources, it is critical to design, evaluate, and select network alternatives using weighted criteria.
 
 Research on the design of weather station networks consistently identifies multi-criteria decision-making (MCDM) methods as ideal for this purpose [@thiriez1975multiple; @koksalan2011multiple; @encyclopedia3010006]. These methods leverage geospatial data and include public input spatially integrated into decision-making using Geographic Information Systems (GIS) [@rojasbriceno2021; @theochari2021hydrometeorological; @tekleyohannes2021; @chakhar2008spatial; @malczewski2004gis; @eastman1998multi]. Studies have demonstrated the effectiveness of traditional geostatistical techniques [@ali2018; @valipour2019], contemporary deep learning algorithms in combination with traditional methods [@safavi2021], and entropy-based approaches [@bertini2021]. Combining geospatial data (e.g., GIS and remote sensing) with multi-criteria analysis (MCA) that assigns relative weights to geographical criteria is particularly efficient for analyzing diverse variables [@rojasbriceno2021].
 
-The Analytic Hierarchy Process (AHP), a well-established multi-criteria decision-making (MCDM) method, is widely used due to its simplicity, its ability to provide insights into the analyzed attributes, and its structured framework for incorporating expert input [@rojasbriceno2021]. Developed by Thomas Saaty in the 1970s [@saaty1977] and refined in subsequent decades [@saaty2001; @saaty2007], AHP is used to make decisions involving multiple criteria and alternatives. Traditionally applied in engineering, social sciences, economics, and business, AHP has recently been utilized effectively for selecting optimal WS sites in Peru [@rojasbriceno2021].
-
-AHP involves breaking down a complex problem into a hierarchical structure of criteria and subcriteria, followed by pairwise comparisons to assign relative importance. The process includes identifying objectives and criteria, structuring them hierarchically, conducting pairwise comparisons, calculating priority values for criteria, and ranking alternatives based on aggregated priorities.
+The Analytic Hierarchy Process (AHP), a well-established multi-criteria decision-making (MCDM) method, is widely used due to its simplicity, its ability to provide insights into the analyzed attributes, and its structured framework for incorporating expert input [@rojasbriceno2021]. Developed by Thomas Saaty in the 1970s [@saaty1977] and refined in subsequent decades [@saaty2001; @saaty2007], AHP is used to make decisions involving multiple criteria and alternatives. Traditionally applied in engineering, social sciences, economics, and business, AHP has recently been utilized effectively for selecting optimal WS sites in Peru [@rojasbriceno2021]. AHP involves breaking down a complex problem into a hierarchical structure of criteria and subcriteria, followed by pairwise comparisons to assign relative importance [@saaty2007]. The process includes identifying objectives and criteria, structuring them hierarchically, conducting pairwise comparisons, calculating priority values for criteria, and ranking alternatives based on aggregated priorities.
 
 In this study, we integrate the Analytical Hierarchy Process (AHP) with geospatial and expert-driven data to systematically identify optimal sites for meteorological and climatic stations in the Dominican Republic. We prioritize key environmental and accessibility criteria to maximize spatial and resource efficiency while minimizing redundancy in existing networks. Additionally, we propose actionable scenarios for network expansion that align with international standards, offering solutions to address data gaps in poorly covered regions. Through this research, we advance geospatial methodologies and decision-support frameworks for meteorological infrastructure planning, with potential applications in broader climatological and environmental sciences.
 
@@ -156,67 +175,60 @@ We designed the questionnaires, processed the responses, and weighted the criter
 
 Subsequently, we used the AHP results as input for a constraint-based exclusion process. In this step, we carefully analyzed the hexagons to identify those located in areas where accessibility was limited or where proximity to water bodies posed challenges. Hexagons situated near or within water bodies were deemed unsuitable for hosting meteorological stations and were excluded from further consideration. This process ensured that only feasible locations remained for the next steps of the analysis.
 
-Finally, we conducted a neighborhood analysis between existing and proposed stations to ensure spatial homogeneity and avoid redundancy. First, we generated optimized station locations using a custom algorithm based on convex hulls and distance maximization. This method iteratively selected points that maximized their distance from previously chosen points, ensuring an optimal spatial distribution aligned with the station density criteria recommended by the World Meteorological Organization [@design1976hydrological; @wmo2020guide]. Subsequently, we used continuous distance surfaces (e.g., rasters) as part of the neighborhood analysis to eliminate proposed stations that were too close to existing ones, thereby avoiding redundancy. Detailed methodological steps can be found in the [Supplementary Information](#infosupl).
+Finally, to optimize the spatial distribution of weather stations, we developed a custom site selection function based on neighborhood analysis. This function generated proposed station locations for three density scenarios: 100, 150, and 250&nbsp;km\textsuperscript{2} per station, aligning with the station density criteria recommended by the World Meteorological Organization [@design1976hydrological; @wmo2020guide]. The algorithm employed convex hulls and distance maximization to iteratively select points that were maximally distant from previously chosen locations, ensuring spatial homogeneity across the coverage area. For each scenario, the coverage area was defined as the set of hexagons meeting the priority categories `r last(fuente_eng)` or `r fuente_eng[length(fuente_eng)-1]`.
 
+To refine the proposed locations, we incorporated a neighborhood analysis that utilized continuous distance surfaces (e.g., rasters). This analysis identified and excluded proposed stations located too close to existing stations with "Good or Active" status in the INDRHI or ONAMET networks. By doing so, we avoided redundancy and ensured that the proposed distributions complemented the existing station networks while maintaining an optimal spatial configuration.
 
 # Results
 
 
 ```{r, echo=F}
-consolidado_sf_for_map <- consolidado_sf %>% 
-  mutate(entidad = gsub('ONAMET', 'INDOMET', entidad)) %>%
-  mutate(Estado = factor(Estado)) %>% 
-  filter(Nombre != 'RADIOSONDA')
-consolidado_sf_for_map_indrhi <- consolidado_sf_for_map %>%
-  filter(entidad == 'INDRHI')
-ws_network_2022_indrhi_map <- consolidado_sf_for_map_indrhi %>% 
-  country_map_ws(entity = "INDRHI") +
-  theme(legend.position = "none")
-consolidado_sf_for_map_indomet <- consolidado_sf_for_map %>%
-  filter(entidad == 'INDOMET')
-ws_network_2022_indomet_map <- consolidado_sf_for_map_indomet %>% 
-  country_map_ws(entity = "INDOMET") +
-  theme(legend.position = "none")
-consolidado_sf_for_map_indomet_indrhi_act <- consolidado_sf_for_map %>%
-  filter(entidad %in% c("INDOMET", "INDRHI"),
-         Estado == 'activa o bueno') %>% 
-  mutate(entidad = 'INDOMET & INDRHI (only active stations)')
-ws_network_2022_indomet_indrhi_act_map <- consolidado_sf_for_map_indomet_indrhi_act %>%
-  country_map_ws(entity = "INDOMET & INDRHI (only active stations)") +
-  theme(legend.position = "none")
-ws_network_2022_grid1 <- plot_grid(
-  ws_network_2022_indomet_map,
-  ws_network_2022_indrhi_map,
-  ws_network_2022_indomet_indrhi_act_map#,
-  # NULL,
-  # ncol = 2, nrow = 2, align = "hv"
-  )
-ws_network_2022_map_legend <- get_legend(
-  ws_network_2022_indrhi_map +
-    theme(
-      legend.position = "right",
-      legend.text = element_text(size = 12),
-      legend.title = element_text(size = 12),
-      legend.key.size = unit(1, "cm"),
-      legend.spacing = unit(0.25 * 1.5, "mm")
-      ))
-ws_network_2022_grid2 <- ws_network_2022_grid1 +
-  draw_grob(ws_network_2022_map_legend, 0.6, 0, 1/3, 0.5)
+{
+  consolidado_sf_for_map <- consolidado_sf %>% 
+    mutate(entidad = gsub('ONAMET', 'INDOMET', entidad)) %>%
+    mutate(Estado = factor(Estado)) %>% 
+    filter(Nombre != 'RADIOSONDA')
+  consolidado_sf_for_map_indrhi <- consolidado_sf_for_map %>%
+    filter(entidad == 'INDRHI')
+  ws_network_2022_indrhi_map <- consolidado_sf_for_map_indrhi %>% 
+    country_map_ws(entity = "INDRHI") +
+    theme(legend.position = "none")
+  consolidado_sf_for_map_indomet <- consolidado_sf_for_map %>%
+    filter(entidad == 'INDOMET')
+  ws_network_2022_indomet_map <- consolidado_sf_for_map_indomet %>% 
+    country_map_ws(entity = "INDOMET") +
+    theme(legend.position = "none")
+  consolidado_sf_for_map_indomet_indrhi_act <- consolidado_sf_for_map %>%
+    filter(entidad %in% c("INDOMET", "INDRHI"),
+           Estado == 'activa o bueno') %>% 
+    mutate(entidad = 'INDOMET & INDRHI (only active stations)')
+  ws_network_2022_indomet_indrhi_act_map <- consolidado_sf_for_map_indomet_indrhi_act %>%
+    country_map_ws(entity = "INDOMET & INDRHI (only active stations)") +
+    theme(legend.position = "none")
+  ws_network_2022_grid1 <- plot_grid(
+    ws_network_2022_indomet_map,
+    ws_network_2022_indrhi_map,
+    ws_network_2022_indomet_indrhi_act_map)
+  ws_network_2022_map_legend <- get_legend(
+    ws_network_2022_indrhi_map +
+      theme(
+        legend.position = "right",
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 12),
+        legend.key.size = unit(1, "cm"),
+        legend.spacing = unit(0.25 * 1.5, "mm")
+        ))
+  ws_network_2022_grid2 <- ws_network_2022_grid1 +
+    draw_grob(ws_network_2022_map_legend, 0.6, 0, 1/3, 0.5)
+}
 jpeg(filename = paste0(figures, '/', 'ws_network_2022_grid2.jpg'),
      width = 3500, height = 2500, res = 350)
 ws_network_2022_grid2
 invisible(dev.off())
 ```
 
-(Table&nbsp;\ref{tab:summaryindometindrhi} and Figure&nbsp;\ref{fig:ws_network_2022_grid2})
-
-```{r ws_network_2022_grid2, echo=F, fig.cap='Weather station networks in the Dominican Republic for 2022, categorized by management entities: the Dominican Institute of Meteorology (INDOMET) and the National Institute of Hydraulic Resources (INDRHI). The maps illustrate the spatial distribution of stations by operational status, including "Active or Good," "Recoverable," and "Inactive or Not Reported." A combined map showcases only active stations from both entities to emphasize their geographic coverage'}
-knitr::include_graphics(paste0(figures, "/", "ws_network_2022_grid2.jpg"))
-```
-
-
-```{r summaryindometindrhi, echo=F}
-consolidado_sf %>%
+```{r input_for_summaryindometindrhi, echo=F}
+input_for_summaryindometindrhi <- consolidado_sf %>%
   filter(tipo == "meteoclimática") %>%
   mutate(entidad = gsub('ONAMET', 'INDOMET', entidad)) %>% 
   mutate(Estado = recode(
@@ -231,17 +243,264 @@ consolidado_sf %>%
   group_by_all() %>% 
   count() %>% 
   pivot_wider(names_from = Status, values_from = n, values_fill = 0) %>% 
-  adorn_totals(c('row', 'col')) %>% 
-  estilo_kable(cubre_anchura = F, titulo = 'Summary of weather station status by owner (INDOMET and INDRHI) in the Dominican Republic for 2022, including the number of active or good, inactive or not reported, and recoverable stations, along with their total counts') %>% 
+  adorn_totals(c('row', 'col'))
+```
+
+
+The operational status and distribution of weather stations (WS) in 2022 reveal key differences between the networks managed by the Dominican Institute of Meteorology (INDOMET) and the National Institute of Hydraulic Resources (INDRHI). We analyzed these differences to identify coverage gaps and opportunities for improvement (Table&nbsp;\ref{tab:summaryindometindrhi}). We found that INDOMET operates 87 WS, classifying 36 as "Active or Good" (41%), 51 as "Inactive or Not Reported" (59%), and none as "Recoverable." In contrast, we observed that INDRHI's network comprises 54 stations, with 16 classified as "Active or Good" (30%), 28 as "Inactive or Not Reported" (52%), and 10 as "Recoverable" (18%). Together, both networks include 141 stations, with 52 in "Active or Good" condition, representing 37% of the total. Considering only WS classified as "Active or Good," the spatial representativeness of INDOMET's network corresponds to one station per `r ceiling(area_rd / input_for_summaryindometindrhi %>% filter(Owner == 'INDOMET') %>% pull(all_of('Active or Good')))`&nbsp;km\textsuperscript{2}, while for INDRHI's network, it corresponds to one station per `r ceiling(area_rd / input_for_summaryindometindrhi %>% filter(Owner == 'INDRHI') %>% pull(all_of('Active or Good')))`&nbsp;km\textsuperscript{2}.
+
+
+```{r ws_network_2022_grid2, echo=F, fig.pos='!ht', fig.cap='Weather station networks in the Dominican Republic for 2022, presented by operational status and management entities. The top two maps show stations managed by the Dominican Institute of Meteorology (INDOMET) and the National Institute of Hydraulic Resources (INDRHI), respectively, categorized as "Active or Good," "Recoverable," or "Inactive or Not Reported." The bottom map consolidates active stations from both institutions to emphasize their combined geographic coverage.'}
+knitr::include_graphics(paste0(figures, "/", "ws_network_2022_grid2.jpg"))
+```
+
+
+We also analyzed the geographic distribution of WS, as shown in Figure&nbsp;\ref{fig:ws_network_2022_grid2}, and observed that INDOMET's network provides broader coverage. We identified that a moderate proportion of INDRHI's stations could be restored to full operational status with minimal recovery efforts. By combining the "Active or Good" WS from INDOMET and INDRHI, we also created a map that offers a comprehensive view of the functional coverage across the Dominican Republic. This map highlights critical gaps in the spatial distribution of WS and emphasizes the need to enhance monitoring in underserved areas to ensure representative weather and climate data coverage.
+
+
+```{r summaryindometindrhi, echo=F}
+input_for_summaryindometindrhi %>% 
+  estilo_kable(cubre_anchura = F, titulo = 'Summary of weather station status in 2022 by owner (INDOMET and INDRHI) in the Dominican Republic for 2022, including the number of active or good, inactive or not reported, and recoverable stations, along with their total counts') %>% 
   column_spec(column = 2:5,
               width = c("7em", "7em", "13em", "7em", "7em"),
               latex_column_spec = 'r')
 ```
 
 
+We used the Analytical Hierarchy Process (AHP) to provide a structured framework for prioritizing criteria and identifying optimal sites for weather stations, ensuring an objective and expert-driven selection process. From the eight preselected criteria evaluated by experts, the four with the highest aggregated weights, in descending order, are `r paste(as.character(prefagg_eng[1:3, 'Variable', drop=T]), collapse = ', ')` and `r as.character(prefagg_eng[4, 'Variable', drop=T])`. We detailed the aggregated prefference of each criterion, along with its standard deviation, in Table&nbsp;\ref{tab:aggregatedpreferences}.
+
+
+```{r aggregatedpreferences, echo=F}
+prefagg_eng %>% 
+  estilo_kable(
+    titulo = 'Aggregated preferences and standard deviations for the eight criteria evaluated in the Analytical Hierarchy Process (AHP) to prioritize optimal sites for weather stations in the Dominican Republic',
+    cubre_anchura = F) %>% 
+  column_spec(column = 2, width = "12em") %>% 
+  column_spec(column = 1, width = "11em")
+```
+
+
+We evaluated and prioritized candidate sites for WS in the Dominican Republic by reclassifying the spatial criteria into four ordinal priority levels: `r vector_a_lista(rev(fuente_eng), es = F)`. We summarized the specific intervals applied for each of the eight evaluated criteria, including distance to access routes, distance to water bodies, elevation, habitat heterogeneity, hours of direct sunshine, rainfall seasonality, slope, and thermal seasonality, in Table&nbsp;\ref{tab:puntuaciones_umbrales_eng}. We illustrated the spatial distribution of these reclassified criteria in Figure&nbsp;\ref{fig:all_criteria_mapa_eng_p}, which highlights the varying proportions of areas assigned to each priority level. Criteria such as rainfall seasonality and thermal seasonality displayed relatively balanced territorial distributions across the four priority levels. In contrast, we observed that criteria like hours of direct sunshine and elevation concentrated priority areas (essential and prioritized) in specific regions. This pattern reflects how we aligned the selected criteria with the unique environmental and geographical characteristics of the Dominican Republic, thereby informing the strategic expansion of the WS network.
+
+
+```{r, echo=F, eval=generar_figuras_lentas}
+all_criteria_mapa_eng_p <- all_criteria_mapa_eng +
+  geom_sf(data = haiti, fill = "white", color = "black", alpha = 0.25) +
+  scale_y_continuous(
+    breaks = seq(-90, 90, by = 1),  
+    labels = scales::number_format(accuracy = 1)
+  ) +
+  scale_x_continuous(
+    breaks = seq(-180, 0, by = 1),
+    labels = scales::number_format(accuracy = 1)
+  ) +
+  facet_wrap(~ name, ncol = 3) +
+  theme(
+    legend.position = "right",
+    legend.text = element_text(size = 11),
+    legend.title = element_text(size = 11),
+    legend.key.size = unit(1, "cm"),
+    legend.spacing = unit(0.25 * 1.5, "mm")) +
+  coord_sf(xlim = lims_rd_buffer_utm[grepl('^x', names(lims_rd_buffer_utm))],
+           ylim = lims_rd_buffer_utm[!grepl('^x', names(lims_rd_buffer_utm))]) +
+  annotation_scale(style = 'ticks', height = unit(0.15, "cm"), location = 'br')
+jpeg(filename = paste0(figures, '/', 'all_criteria_mapa_eng_p.jpg'),
+     width = 3500, height = 2700, res = 400)
+shift_legend(all_criteria_mapa_eng_p)
+invisible(dev.off())
+```
+
+
+```{r all_criteria_mapa_eng_p, echo=F, fig.pos='!ht', fig.cap='Reclassification of criteria values for weather station site selection across the Dominican Republic. Each panel represents the spatial distribution of priority categories (essential, prioritized, moderately prioritized, and marginally prioritized) for one of the evaluated criteria: distance to access routes, distance to water bodies, elevation, habitat heterogeneity, hours of direct sunshine, rainfall seasonality, slope, and thermal seasonality'}
+knitr::include_graphics(paste0(figures, "/", "all_criteria_mapa_eng_p.jpg"))
+```
+
+
+```{r puntuaciones_umbrales_eng, echo=F}
+puntuaciones_umbrales_eng %>% 
+  setNames(gsub("^(.)", "\\U\\1", colnames(.), perl = TRUE)) %>% 
+  mutate(across(everything(), ~ gsub('\\] y', '\\] and', .x))) %>% 
+  estilo_kable(
+    titulo = 'Thresholds used for reclassifying the average values of eight spatial criteria into four ordinal priority levels (essential, prioritized, moderately prioritized, and marginally prioritized) for weather station site selection in the Dominican Republic. Each row corresponds to a criterion, showing the intervals defined by the research team based on expert knowledge and bibliographic references.',
+    cubre_anchura = T) %>% 
+  column_spec(2:5, latex_column_spec = "m{2.6cm}") %>%
+  column_spec(1, latex_column_spec = "m{4cm}")
+```
+
+
+We analyzed the reclassified scores for each criterion and observed wide variability in the area covered by each priority category (see Table&nbsp;\ref{tab:proportionalareas}). Based on the AHP results, we assigned high weights to rainfall and thermal seasonality, which balanced the territory proportions relatively evenly across the four priority classes. In contrast, we noticed that the criterion for hours of direct sunshine led to a significant concentration of areas classified as high-priority for establishing weather stations, including "`r fuente_eng[length(fuente_eng)-1]`" and "`r last(fuente_eng)`". Similarly, we identified numerous hexagons categorized as "`r fuente_eng[length(fuente_eng)-1]`" and "`r last(fuente_eng)`" under the elevation criterion. This result highlights how the Dominican Republic's mountainous regions, with the lowest WS density, drove us to prioritize elevated topography for establishing new stations.
+
+
+```{r proportionalareas, echo=F}
+areas_proporcionales_eng %>%
+  # select(1:5) %>% 
+  setNames(gsub("^(.)", "\\U\\1", colnames(.), perl = TRUE)) %>% 
+  estilo_kable(titulo = "Percentage of area by criteria used in the selection process for optimal weather station sites, emphasizing each criterion's contribution to the prioritization framework",
+               cubre_anchura = T) %>% 
+  # column_spec(2:5, latex_column_spec = "m{2.2cm}") %>%
+  column_spec(2:5, width = "2.2cm") %>%
+  column_spec(1, latex_column_spec = "m{4.4cm}")
+```
+
+
+We analyzed the distribution of aggregated categories before and after applying exclusion based on limiting factors, highlighting key differences in spatial coverage and proportional areas. Initially, the aggregated categories without exclusions showed a dominance of intermediate priorities, as `r fuente_eng[2]` and `r fuente_eng[3]` accounted for 70% of the total studied area, while `r first(fuente_eng)` and `r last(fuente_eng)` shared the remaining 30% (Table&nbsp;\ref{tab:areas_prop_all_criteria_con_sin_excl_eng}, second column). These categories were spatially well distributed across the Dominican Republic (Figure&nbsp;\ref{fig:all_criteria_scores_non_excluded_and_excluded_map_eng_p}, left), reflecting the AHP method's focus on prioritizing areas with favorable environmental and geographical attributes. High-priority hexagons (`r fuente_eng[length(fuente_eng)-1]` and `r last(fuente_eng)`) were mainly located in regions with high seasonality, particularly in mountainous areas and along the eastern edge of the country, which also exhibited good performance in hours of sunshine. Conversely, hexagons categorized as `r first(fuente_eng)` were predominantly found in lower elevation areas with limited sunshine hours, steep slopes, and low thermal and rainfall seasonality.
+
+After applying exclusion based on limiting factors, the distribution of aggregated categories revealed significant changes in both spatial patterns and proportional coverage. A total of `r hexagonos_imputados` hexagons were assigned the category `r first(fuente_eng)` due to their proximity to water bodies, location within populated areas, or remoteness in terms of accessibility. These excluded areas included inland and coastal lakes and lagoons, coastal zones, wide rivers, reservoirs, and inaccessible mountainous regions. As shown in Figure&nbsp;\ref{fig:all_criteria_scores_non_excluded_and_excluded_map_eng_p} (right), the updated distribution reflects a refinement in prioritization, ensuring that the remaining areas meet the necessary conditions for weather station placement. The proportional areas of the aggregated categories after exclusion are summarized in Table&nbsp;\ref{tab:areas_prop_all_criteria_con_sin_excl_eng} (third column), highlighting a redistribution that prioritizes feasible and representative locations for weather stations.
+
+
+```{r, echo=F, eval=generar_figuras_lentas}
+all_criteria_scores_non_excluded_and_excluded_map_eng_p <-  all_criteria_scores_non_excluded_and_excluded_map_eng +
+  geom_sf(data = haiti, fill = "white", color = "black", alpha = 0.25) +
+  scale_y_continuous(
+    breaks = seq(-90, 90, by = 1),  
+    labels = scales::number_format(accuracy = 1)
+  ) +
+  scale_x_continuous(
+    breaks = seq(-180, 0, by = 1),
+    labels = scales::number_format(accuracy = 1)
+  ) +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 9),
+    legend.title = element_text(size = 9),
+    legend.key.size = unit(1, "cm"),
+    legend.spacing = unit(0.25 * 1.5, "mm")) +
+  coord_sf(xlim = lims_rd_buffer_utm[grepl('^x', names(lims_rd_buffer_utm))],
+           ylim = lims_rd_buffer_utm[!grepl('^x', names(lims_rd_buffer_utm))]) +
+  annotation_scale(style = 'ticks', height = unit(0.15, "cm"), location = 'br')
+jpeg(filename = paste0(figures, '/', 'all_criteria_scores_non_excluded_and_excluded_map_eng_p.jpg'),
+     width = 3500, height = 1600, res = 450)
+all_criteria_scores_non_excluded_and_excluded_map_eng_p
+invisible(dev.off())
+```
+
+
+```{r all_criteria_scores_non_excluded_and_excluded_map_eng_p, echo=F, fig.pos='!ht', fig.cap='Map of aggregated categories, with and without exclusion based on limiting factors'}
+knitr::include_graphics(paste0(figures, "/", "all_criteria_scores_non_excluded_and_excluded_map_eng_p.jpg"))
+```
+
+
+```{r areas_prop_all_criteria_con_sin_excl_eng, echo=F}
+areas_prop_all_criteria_con_sin_excl_eng %>% 
+  rename_with(function(colname) {
+    colname %>%
+      gsub("Proportion ", '', .) %>%
+      gsub("\\(|\\)", "", .) %>% 
+      gsub("^(.)", "\\U\\1", ., perl = TRUE)}) %>% 
+  adorn_totals('row') %>% 
+  estilo_kable(titulo = 'Percentage of area covered by aggregated categories for weather station site selection, with and without exclusion based on limiting factors',
+               cubre_anchura = T) %>% 
+  column_spec(2:3, width = "5.5cm") %>%
+  column_spec(1, width = "3.8cm")
+```
+
+
+Our final step involved proposing site locations based on the priority categories and criteria established in the earlier stages. These proposals aim to address gaps in the existing weather station network by suggesting new locations that meet the requirements of either `r last(fuente_eng)` or `r fuente_eng[length(fuente_eng)-1]`. Using the refined spatial distribution after exclusions, we generated three scenarios with varying station densities: 100, 150, and 250&nbsp;km\textsuperscript{2} per station. Each scenario represents an optimized distribution of proposed sites, tailored to achieve comprehensive spatial coverage while considering practical constraints and priorities.
+
+In the first scenario (Figure&nbsp;\ref{fig:esc_100_150_250_activas_buenas_mapa_eng},&nbsp;top), where each station covers 100&nbsp;km\textsuperscript{2} of area, we recommend the installation of `r last(esc_100_activas_buenas_df_resumen$n)` new stations. The map clearly distinguishes the proposed sites categorized as "`r fuente_eng[[length(fuente_eng)-1]]`" and "`r last(fuente_eng)`". The proposed "`r last(fuente_eng)`" sites are predominantly concentrated in the central and eastern regions of the Dominican Republic, particularly along mountainous areas and regions with higher elevation. In contrast, "`r fuente_eng[[length(fuente_eng)-1]]`" sites show a broader distribution, extending into the northern and southern regions, covering a mix of coastal areas and lowlands. Notably, the southern coastal plains, lowlands, and mid-altitude regions feature a higher proportion of prioritized sites, highlighting the emphasis on coverage in areas with fewer terrain and environmental constraints. In the northeast and central DR, proposed sites are scattered, with a focus on bridging gaps in spatial coverage in flatter, lower-priority regions.
+
+Expanding on the analysis, the second scenario (Figure&nbsp;\ref{fig:esc_100_150_250_activas_buenas_mapa_eng},&nbsp;middle) assumed a coverage of 150&nbsp;km\textsuperscript{2} per station. We followed a similar process and recommended installing `r last(esc_150_activas_buenas_df_resumen$n)` new stations. The map distinguished the proposed sites categorized as "`r fuente_eng[[length(fuente_eng)-1]]`" and "`r last(fuente_eng)`", and showed how the spatial distribution shifted notably compared to the first scenario. Our proposal concentrated "`r last(fuente_eng)`" sites in the central and western regions, particularly in mountainous areas and regions with complex terrain, though their density decreased slightly due to the existing broader station coverage in the east region. In contrast, "`r fuente_eng[[length(fuente_eng)-1]]`" sites spread more evenly across the country, with a marked presence in valleys and plains. This scenario demonstrated our effort to balance the inclusion of essential and prioritized areas while maintaining a cohesive spatial configuration. Additionally, we extended coverage into areas less emphasized in the first scenario, particularly along the central valleys and northern slopes, further bridging gaps in the network.
+
+
+```{r, echo=F}
+esc_100_150_250_activas_buenas_mapa_eng <- plot_grid(
+  esc_100_activas_buenas_mapa_eng +
+    geom_sf(data = haiti, fill = "white", color = "black", alpha = 0.25) +
+    geom_sf(data = pais, fill = "lightgrey", color = "black", alpha = 0.25) +
+    scale_y_continuous(
+      breaks = seq(-90, 90, by = 1),
+      labels = scales::number_format(accuracy = 1)) +
+    scale_x_continuous(
+      breaks = seq(-180, 0, by = 1),
+      labels = scales::number_format(accuracy = 1)) +
+    theme(
+      legend.position = "right",
+      legend.direction = "vertical",
+      legend.text = element_text(size = 12),
+      legend.title = element_text(size = 12),
+      legend.key.size = unit(1, "cm"),
+      legend.spacing = unit(0.25 * 1.5, "mm"),
+      title = element_text(size = 14)) +
+    labs(
+      title = bquote(
+        "Scenario 1: one station per 100 "*km^2~". Total proposed: "*.(last(esc_100_activas_buenas_df_resumen$n)))) +
+    coord_sf(xlim = lims_rd_buffer_utm[grepl('^x', names(lims_rd_buffer_utm))],
+           ylim = lims_rd_buffer_utm[!grepl('^x', names(lims_rd_buffer_utm))]),
+  esc_150_activas_buenas_mapa_eng +
+    geom_sf(data = haiti, fill = "white", color = "black", alpha = 0.25) +
+    geom_sf(data = pais, fill = "lightgrey", color = "black", alpha = 0.25) +
+    scale_y_continuous(
+      breaks = seq(-90, 90, by = 1),
+      labels = scales::number_format(accuracy = 1)) +
+    scale_x_continuous(
+      breaks = seq(-180, 0, by = 1),
+      labels = scales::number_format(accuracy = 1)) +
+    theme(
+      legend.position = "right",
+      legend.direction = "vertical",
+      legend.text = element_text(size = 12),
+      legend.title = element_text(size = 12),
+      legend.key.size = unit(1, "cm"),
+      legend.spacing = unit(0.25 * 1.5, "mm"),
+      title = element_text(size = 14)) +
+    labs(
+      title = bquote(
+        "Scenario 1: one station per 100 "*km^2~". Total proposed: "*.(last(esc_150_activas_buenas_df_resumen$n)))) +
+    coord_sf(xlim = lims_rd_buffer_utm[grepl('^x', names(lims_rd_buffer_utm))],
+           ylim = lims_rd_buffer_utm[!grepl('^x', names(lims_rd_buffer_utm))]),
+  esc_250_activas_buenas_mapa_eng +
+    geom_sf(data = haiti, fill = "white", color = "black", alpha = 0.25) +
+    geom_sf(data = pais, fill = "lightgrey", color = "black", alpha = 0.25) +
+    scale_y_continuous(
+      breaks = seq(-90, 90, by = 1),
+      labels = scales::number_format(accuracy = 1)) +
+    scale_x_continuous(
+      breaks = seq(-180, 0, by = 1),
+      labels = scales::number_format(accuracy = 1)) +
+    theme(
+      legend.position = "right",
+      legend.direction = "vertical",
+      legend.text = element_text(size = 12),
+      legend.title = element_text(size = 12),
+      legend.key.size = unit(1, "cm"),
+      legend.spacing = unit(0.25 * 1.5, "mm"),
+      title = element_text(size = 14)) +
+    labs(
+      title = bquote(
+        "Scenario 1: one station per 100 "*km^2~". Total proposed: "*.(last(esc_250_activas_buenas_df_resumen$n)))) +
+    coord_sf(xlim = lims_rd_buffer_utm[grepl('^x', names(lims_rd_buffer_utm))],
+           ylim = lims_rd_buffer_utm[!grepl('^x', names(lims_rd_buffer_utm))]),
+  ncol = 1)
+jpeg(filename = paste0(figures, '/', 'esc_100_150_250_activas_buenas_mapa_eng.jpg'),
+     width = 2250, height = 3500, res = 300)
+esc_100_150_250_activas_buenas_mapa_eng
+invisible(dev.off())
+```
+
+
+```{r esc_100_150_250_activas_buenas_mapa_eng, echo=F, fig.pos='!ht', out.width='70%', fig.cap='Spatial distribution of existing and proposed weather stations (WS) under three different scenarios of station density in the Dominican Republic: one station per 100 km\\textsuperscript{2} (top), 150 km\\textsuperscript{2} (middle), and 250 km\\textsuperscript{2} (bottom). Existing stations are represented by inverted triangles, while proposed sites are represented by circles. The proposed sites are classified into two categories: "essential" and "prioritized," with their respective counts shown in the legend. Proposed sites have been selected to avoid redundancy with existing stations in "Good or Active" condition managed by INDOMET and INDRHI'}
+knitr::include_graphics(paste0(figures, "/", "esc_100_150_250_activas_buenas_mapa_eng.jpg"))
+```
+
+
+In the third scenario, with a coverage of 250&nbsp;km\textsuperscript{2} per station, we recommended installing `r last(esc_250_activas_buenas_df_resumen$n)` new stations (Figure&nbsp;\ref{fig:esc_100_150_250_activas_buenas_mapa_eng},&nbsp;bottom). The resulting map emphasizes the focus on maximizing coverage in priority areas while ensuring efficient resource allocation. Proposed sites in "`r last(fuente_eng)`" areas were primarily located in the central and western regions, continuing the pattern observed in previous scenarios. However, their distribution became more dispersed due to the lower station density. On the other hand, "`r fuente_eng[[length(fuente_eng)-1]]`" dominated across the country, particularly in areas where terrain and environmental constraints are less severe. This scenario also extended coverage to underrepresented regions in the northwest, filling significant gaps in the spatial distribution. The broader spacing of stations in this scenario highlights the trade-offs involved in balancing territorial coverage, resource efficiency, and budget constraints.
+
 
 # Discussion
 
+We successfully achieved the primary objectives of this study by integrating geospatial analysis with the Analytic Hierarchy Process (AHP) to propose optimal site locations for weather stations (WS) in the Dominican Republic. This approach allowed us to systematically address gaps in the existing network and align new site proposals with environmental, accessibility, and governance priorities [@Izzo2010ANC; @proyecto2019pma].
+
+The results demonstrate the value of combining multi-criteria decision-making (MCDM) methods with neighborhood analysis for spatial planning. Key findings include the identification of high-priority areas based on thermal and rainfall seasonality, elevation, and solar radiation, which collectively emphasize the importance of elevated regions with significant climatic variability [@rojasbriceno2021; @Izzo2010ANC]. These results align with previous studies highlighting the role of these variables in optimizing WS placement, but our study advances the field by explicitly incorporating redundancy constraints through a neighborhood-based exclusion process using a custom-developed function.
+
+Our methodological approach offers several innovations compared to previous studies. First, the use of the H3 hexagonal indexing system enhanced the spatial resolution and computational efficiency of zonal statistics. Second, the integration of geospatial tools like Google Earth Engine (GEE) with AHP allowed us to streamline the workflow, facilitating the prioritization of thousands of candidate sites across the Dominican Republic. Third, the disaggregation of proposed sites into "essential" and "prioritize" categories introduces a flexible framework for decision-makers to allocate resources according to budget constraints and governance structures.
+
+The scenarios generated for station densities---100, 150, and 250\,km\textsuperscript{2} per station---provide practical pathways for WS network expansion, while simultaneously adhering to the recommendations of national and international entities [@proyecto2019pma;@design1976hydrological]. Each scenario reflects trade-offs between spatial coverage and resource efficiency, offering stakeholders the flexibility to adapt the recommendations to evolving priorities. Notably, our results show that higher-density scenarios (e.g., 100\,km\textsuperscript{2}) achieve comprehensive coverage in critical areas, while lower-density scenarios (e.g., 250\,km\textsuperscript{2}) maintain representativeness with reduced resource investment. 
+
+Despite these strengths, several limitations should be acknowledged. While the proposed site locations are based on robust spatial analysis, the definitive selection of WS locations requires field validation to assess terrain constraints, local accessibility, and potential land-use conflicts. Additionally, the study's exclusion criteria focused primarily on proximity to water bodies and existing WS networks but did not account for other potential barriers, such as detailed accessibility constraints or issues related to land ownership. These factors underscore the need for complementary qualitative assessments during implementation.
+
+Our approach also highlights opportunities for leveraging DIY and low-cost equipment in expanding WS networks, particularly in a global context where high-density data and microclimate information are increasingly demanded for specific studies [@kristofer2021low; @theisen2020more]. These solutions are particularly relevant for deploying stations in prioritized areas, as they can reduce costs while maintaining sufficient data quality for certain applications [@kemppinen_microclimate_2024]. Furthermore, integrating educational initiatives with WS deployment---such as collaborating with schools and community organizations---can enhance the sustainability and societal impact of these networks.
+
+In conclusion, this study provides a replicable framework for WS network planning that combines advanced geospatial analysis with expert-driven criteria prioritization. The proposed methodology is not only relevant for the Dominican Republic but also adaptable to other regions facing similar challenges in optimizing WS networks. Future research should explore the integration of additional environmental variables, such as wind patterns or soil characteristics, and evaluate the long-term performance of deployed WS in capturing climatic variability. By addressing these avenues, stakeholders can further enhance the resilience and functionality of WS networks in the face of evolving climatic and societal demands.
 
 # Conflict of Interest Declaration {.unnumbered}
 
@@ -253,20 +512,9 @@ JM and MI conceptualized and designed the study. JM was responsible for data col
 
 # Data, Scripts, and Code Availability {.unnumbered}
 
-The data supporting the findings of this study are openly available on Zenodo at \url{} []. The scripts used for data curation, analysis, and visualization are available in this section, as well as in the GitHub repository at \url{} and on Zenodo at \url{} [].
+The data supporting the findings of this study are openly available on Zenodo at \url{} []. The scripts used for data curation, analysis, and visualization are available in this section, as well as in the GitHub repository at \url{https://github.com/geofis/seleccion-sitios-estaciones-meteoclimaticas-rd} and here \url{https://github.com/geofis/datos-meteoclimaticos-escenarios-cc}, and on Zenodo at \url{} [].
 
 
 \newpage
-
-# Supplementary Information {#suppinfo .unnumbered}
-
-
-```{=tex}
-\beginsupplement
-```
-
-
-```{r child=paste0(raiz_supl_met, '.Rmd'), eval=incluir_supl_al_final}
-```
 
 # References
