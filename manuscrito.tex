@@ -260,22 +260,23 @@ Hydrological Sciences, 1976).
 
 We explicitly requested expert consultations, asking respondents to
 complete questionnaires electronically. After collecting the responses,
-we organized and recoded the data, then evaluated their consistency. We
-used only consistent responses to establish the criteria weights, which
-were subsequently applied to the available geographic information
-sources, including approximately
+we organized and recoded the data, then evaluated their consistency.
+Only consistent responses were used to establish the criteria weights,
+which were subsequently applied to the available geospatial sources. We
+utilized geospatial data sources available in Google Earth Engine (GEE),
+which were preprocessed using zonal statistics techniques and organized
+according to the H3 spatial index library from Uber (Gorelick et al.,
+2017; Martínez-Batlle, 2022; Uber Technologies, Inc., 2024). This
+dataset included approximately
 \href{https://geofis.github.io/zonal-statistics/README.html}{13,000
-hexagons containing the corresponding multi-criteria information
-distributed across the Dominican Republic} (Martínez-Batlle, 2022).
-Afterwards, we created these hexagons using the H3 spatial index library
-from Uber and computed zonal statistics with Google Earth Engine (GEE)
-(Gorelick et al., 2017; Uber Technologies, Inc., 2024). Specifically, we
-employed the GEE Python API to process the data programmatically, using
-packages like \texttt{geemap} for map visualization and data handling
-(Google Earth Engine Contributors, 2023; Wu, 2020). Finally, we assigned
-each hexagon an aggregated priority category, choosing from four
-possible options: marginally prioritized, moderately prioritized,
-prioritized and essential.
+hexagons} containing multi-criteria information distributed across the
+Dominican Republic. For this task, we employed the GEE Python API to
+process the data programmatically, using packages like \texttt{geemap}
+for map visualization and data handling (Google Earth Engine
+Contributors, 2023; Wu, 2020). Finally, we assigned each hexagon an
+aggregated priority category, choosing from four possible options:
+marginally prioritized, moderately prioritized, prioritized and
+essential.
 
 We designed the questionnaires, processed the responses, and weighted
 the criteria of geographic information sources using programming
