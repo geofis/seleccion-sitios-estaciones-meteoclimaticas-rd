@@ -447,7 +447,7 @@ esc_100_150_250_activas_buenas_mapa_eng <- plot_grid(
       title = element_text(size = 14)) +
     labs(
       title = bquote(
-        "Scenario 1: one station per 100 "*km^2~". Total proposed: "*.(last(esc_150_activas_buenas_df_resumen$n)))) +
+        "Scenario 2: one station per 150 "*km^2~". Total proposed: "*.(last(esc_150_activas_buenas_df_resumen$n)))) +
     coord_sf(xlim = lims_rd_buffer_utm[grepl('^x', names(lims_rd_buffer_utm))],
            ylim = lims_rd_buffer_utm[!grepl('^x', names(lims_rd_buffer_utm))]),
   esc_250_activas_buenas_mapa_eng +
@@ -469,7 +469,7 @@ esc_100_150_250_activas_buenas_mapa_eng <- plot_grid(
       title = element_text(size = 14)) +
     labs(
       title = bquote(
-        "Scenario 1: one station per 100 "*km^2~". Total proposed: "*.(last(esc_250_activas_buenas_df_resumen$n)))) +
+        "Scenario 3: one station per 250 "*km^2~". Total proposed: "*.(last(esc_250_activas_buenas_df_resumen$n)))) +
     coord_sf(xlim = lims_rd_buffer_utm[grepl('^x', names(lims_rd_buffer_utm))],
            ylim = lims_rd_buffer_utm[!grepl('^x', names(lims_rd_buffer_utm))]),
   ncol = 1)
