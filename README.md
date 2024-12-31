@@ -6,7 +6,7 @@ This repository compiles manuscripts and slide presentations related to the rese
 
 ### Manuscripts, Preprints, Articles
 
-A preprint titled "Site Planning for a Network of Government-operated Weather Stations in the Dominican Republic Using Zonal Statistics from Geospatial Sources, Multi-Criteria Decision-Making, and Neighborhood Analysis" is currently available [here](manuscrito.pdf).
+A preprint titled "Site Planning for a Network of Government-operated Weather Stations in the Dominican Republic Using Zonal Statistics from Geospatial Sources, Multi-Criteria Decision-Making, and Neighborhood Analysis" is currently available in this repo as [manuscrito.pdf](manuscrito.pdf) and on [EarthArXiv](https://doi.org/10.31223/X5B14C).
 
 To reproduce the results of this research, follow these steps:
 
@@ -39,7 +39,7 @@ Este repositorio recopila manuscritos y presentaciones de diapositivas sobre la 
 
 ### Manuscritos, preprints, artículos
 
-Actualmente, se dispone de un preprint (en inglés) titulado "Site Planning for a Network of Government-operated Weather Stations in the Dominican Republic Using Zonal Statistics from Geospatial Sources, Multi-Criteria Decision-Making, and Neighborhood Analysis", diponible [aquí](manuscrito.pdf).
+Actualmente, se dispone de un preprint (en inglés) titulado "Site Planning for a Network of Government-operated Weather Stations in the Dominican Republic Using Zonal Statistics from Geospatial Sources, Multi-Criteria Decision-Making, and Neighborhood Analysis", disponible en este repo como [manuscrito.pdf](manuscrito.pdf) y en [EarthArXiv](https://doi.org/10.31223/X5B14C)
 
 Para reproducir los resultados de esta investigación, se recomienda seguir los siguientes pasos:
 
